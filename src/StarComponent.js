@@ -55,11 +55,11 @@ export default function StarComponent({
           />
         ))}
       </div>
-      <p style={textStyle}>
+      {/* <p style={textStyle}>
         {words.length === starsNum
           ? words[tempRaiting ? tempRaiting - 1 : raiting - 1]
           : tempRaiting || raiting || ""}
-      </p>
+      </p> */}
     </div>
   );
 }
@@ -73,8 +73,8 @@ function Star({
   size,
 }) {
   const starStyle = {
-    width: "48px",
-    height: "48px",
+    width: `${size}px`,
+    height: `${size}px`,
     display: "block",
     cursor: "pointer",
   };
