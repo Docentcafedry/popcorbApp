@@ -67,21 +67,28 @@ export default function App() {
 
   useEffect(
     function () {
+      const controller = new AbortController();
       async function fetchFilms() {
         try {
           setLoading(true);
           const resp = await fetch(
-            `http://www.omdbapi.com/?apikey=${apiKey}&s=${query}`
+            `http://www.omdbapi.com/?apikey=${apiKey}&s=${query}`,
+            { signal: controller.signal }
           );
           if (!resp.ok)
             throw new Error("Something wrong happened while request proceeded");
           const data = await resp.json();
 
           if (!data.Search) throw new Error("There is no data for this film");
-          console.log(data.Search);
+
           setMovies(data.Search);
+          // setError("");
         } catch (err) {
-          setError(err.message);
+          console.log(err.message);
+          console.log(err.name);
+          if (err.name !== "AbortError") {
+            setError(err.message);
+          }
         } finally {
           setLoading(false);
         }
@@ -95,7 +102,9 @@ export default function App() {
 
       fetchFilms();
 
-      return () => setError("");
+      return function () {
+        controller.abort();
+      };
     },
     [query]
   );
@@ -296,6 +305,31 @@ function MovieDetail({ movieId, onUnsetMovieId, onSetWatchedMovie }) {
     },
     [movieId]
   );
+
+  useEffect(
+    function () {
+      if (!title) return;
+      document.title = title;
+
+      return () => {
+        document.title = "usePopcorn";
+      };
+    },
+    [title]
+  );
+
+  useEffect(function () {
+    function handlerEscape(e) {
+      if (e.key === "Escape") {
+        onUnsetMovieId();
+      }
+    }
+    document.addEventListener("keydown", handlerEscape);
+
+    return function () {
+      document.removeEventListener("keydown", handlerEscape);
+    };
+  });
 
   return (
     <div className="details">
