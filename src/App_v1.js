@@ -47,10 +47,7 @@ function FoundResults({ movies }) {
 export default function App() {
   const [query, setQuery] = useState("inception");
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState(() => {
-    const data = localStorage.getItem("watched");
-    return data ? JSON.parse(data) : [];
-  });
+  const [watched, setWatched] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [openMovieId, setMovieId] = useState(null);
@@ -67,13 +64,6 @@ export default function App() {
   function handleUnsetMovieId() {
     setMovieId(null);
   }
-
-  useEffect(
-    function () {
-      localStorage.setItem("watched", JSON.stringify(watched));
-    },
-    [watched]
-  );
 
   useEffect(
     function () {
