@@ -294,6 +294,8 @@ function MovieDetail({ movieId, onUnsetMovieId, onSetWatchedMovie }) {
   const [movie, setMovie] = useState({});
   const [userRating, setUserRating] = useState("");
 
+  const userCountRate = useRef(0);
+
   const {
     Title: title,
     Year: year,
@@ -316,11 +318,23 @@ function MovieDetail({ movieId, onUnsetMovieId, onSetWatchedMovie }) {
       imdbRating: Number(imdbRating),
       runtime: Number(runtime.split(" ").at(0)),
       userRating,
+      userCountRate: userCountRate.current,
     };
+
+    console.log(newWatchedMovie);
 
     onSetWatchedMovie(newWatchedMovie);
     onUnsetMovieId();
   }
+
+  useEffect(
+    function () {
+      if (userRating > 0) {
+        userCountRate.current++;
+      }
+    },
+    [userRating]
+  );
 
   useEffect(
     function () {
